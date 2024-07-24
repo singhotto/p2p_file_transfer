@@ -10,16 +10,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "ThreadPool.hh"
 
 class Server
 {
 private:
     /* data */
     struct sockaddr_in address;
-    int server_fd, new_socket;
+    int server_fd;
     int opt;
     int addrlen;
     int PORT;
+    ThreadPool t_pool;
+    std::vector<int> clients;
 
 public:
     Server(int port);

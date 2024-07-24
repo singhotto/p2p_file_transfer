@@ -10,13 +10,17 @@ CXXFLAGS = -Wall -Wextra -std=c++17
 INCLUDES = -Iutils
 
 # Source files
-SRCS = main.cpp utils/Server.cc
+SRCS = main.cpp utils/Server.cc utils/FileManager.cc utils/ThreadPool.cc
 
 # Object files
-OBJS = main.o utils/Server.o
+OBJS = $(SRCS:%.cpp=build/%.o)
 
 # Executable name
-TARGET = main
+TARGET = build/main
+
+# Create the build directory if it doesn't exist
+BUILD_DIR = build
+$(shell mkdir -p $(BUILD_DIR))
 
 # Default target
 all: $(TARGET)
@@ -25,16 +29,12 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
-# Rule to build main.o
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c main.cpp -o main.o
-
-# Rule to build utils/Server.o
-utils/Server.o: utils/Server.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c utils/Server.cc -o utils/Server.o
+# Rule to build object files
+build/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
 # Clean rule to remove generated files
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(BUILD_DIR)/*.o $(TARGET)
 
 .PHONY: all clean
